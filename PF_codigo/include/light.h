@@ -1,0 +1,41 @@
+#ifndef LIGHT_H
+#define LIGHT_H
+
+#include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <vector>
+
+class Light 
+{
+public:
+	// Light Attributes
+	glm::vec3 Position;
+	glm::vec3 Direction;
+	glm::vec4 Color;
+	glm::vec4 Power;
+	int       alphaIndex;
+	float     distance;
+	float cutOff;      // Coseno del ángulo interno
+	float outerCutOff; // Coseno del ángulo externo
+	int   type;
+
+	Light() {
+		Position = glm::vec3(0.0f, 0.0f, 0.0f); // Posición de la fuente de luz
+		Direction = glm::vec3(1.0f, 0.0f, 0.0f); // Dirección (no aplica para fuentes puntuales)
+		Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f); // Color de la fuente de luz
+		Power = glm::vec4(60.0f, 60.0f, 60.0f, 1.0f); // Potencia en Watts
+		alphaIndex = 10; // potencia del brillo especular
+		distance = 3.0f;
+		cutOff = glm::cos(glm::radians(12.5f)); // Ángulo interno de la luz direccional
+		outerCutOff = glm::cos(glm::radians(17.5f)); // Ángulo externo de la luz direccional
+		type = 0; // Tipo de luz: 0 = Punto, 1 = Foco
+	}
+	~Light() {}
+
+private:
+
+};
+
+#endif
