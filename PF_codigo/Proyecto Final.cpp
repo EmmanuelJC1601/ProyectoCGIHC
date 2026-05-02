@@ -271,15 +271,15 @@ bool Start() {
 	m_cubo_chatarra = new Model("models/ModelosFbx/cubo_chatarra.fbx");
 	m_tanques = new Model("models/ModelosFbx/tanques.fbx");
 
-	// Cubemap - Ajustado con reciclaje de caras y corrección de sintaxis
+	// Cubemap 
 	vector<std::string> faces
 	{
-		"textures/cubemap/01/nx.jpg", // Cara 1 (Right)  <- Reciclada
-		"textures/cubemap/01/ny.jpg", // Cara 2 (Left)   <- Reciclada
-		"textures/cubemap/01/nz.jpg", // Cara 3 (Top)    <- Reciclada
-		"textures/cubemap/01/nx.jpg", // Cara 4 (Bottom) <- Reciclada
-		"textures/cubemap/01/ny.jpg", // Cara 5 (Back)   <- Reciclada
-		"textures/cubemap/01/nz.jpg"  // Cara 6 (Front)  <- Reciclada
+		"textures/cubemap/01/posx.jpg", // Cara 1: Derecha (Right)
+		"textures/cubemap/01/negx.jpg", // Cara 2: Izquierda (Left)
+		"textures/cubemap/01/posy.jpg", // Cara 3: Arriba (Top)
+		"textures/cubemap/01/negy.jpg", // Cara 4: Abajo (Bottom)
+		"textures/cubemap/01/posz.jpg", // Cara 5: Atrás (Back)
+		"textures/cubemap/01/negz.jpg"  // Cara 6: Frente (Front)
 	};
 	mainCubeMap = new CubeMap();
 	mainCubeMap->loadCubemap(faces);
