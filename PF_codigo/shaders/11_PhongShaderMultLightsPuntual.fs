@@ -83,10 +83,17 @@ void main() {
     for(int i = 0; i < numLights; ++i) {
         totalLighting += ApplyLight(allLights[i], n, e);
     }
-           
+            
     vec4 texel = texture(texture_diffuse1, TexCoords);
     
-    // Mezcla de textura e iluminación
-    FragColor = texel * totalLighting;
-    FragColor.a = transparency;
+    // --- OVERRIDE EMISIVO (Bypass de textura para el láser) ---
+    // Detectamos si el código C++ envió una intensidad artificial (colorLaser * 2.0f)
+    if (MaterialAmbientColor.r > 1.0 || MaterialAmbientColor.g > 1.0 || MaterialAmbientColor.b > 1.0) {
+        // Renderizamos el color puro del láser ignorando el sombreado y la textura
+        FragColor = vec4(MaterialAmbientColor.rgb, transparency);
+    } else {
+        // Mezcla de textura e iluminación habitual para los demás objetos
+        FragColor = texel * totalLighting;
+        FragColor.a = transparency;
+    }
 }
