@@ -102,6 +102,9 @@ Shader *wavesShader;
 Shader *cubemapShader;
 Shader *dynamicShader;
 
+Shader *proceduralSatelite;
+Shader *proceduralPlaneta;
+
 // CARGAR MODELOS
 Model* MAESTRO;
 Model* meteoro;
@@ -116,6 +119,19 @@ Model* sonda_voyager;
 Model* kiko_marciano;
 Model* m_copper_golem;
 Model* m_transport_robot;
+
+Model* planeta0;
+Model* planeta1;
+Model* planeta2;
+Model* planeta3;
+Model* cohete;
+Model* nave;
+Model* satelite0;
+Model* satelite1;
+Model* satelite2;
+Model* walle;
+Model* amongUs;
+Model* humo;
 
 // MODELOS ANIMADOS
 AnimatedModel   *character01;
@@ -236,6 +252,9 @@ bool Start() {
 	cubemapShader = new Shader("shaders/10_vertex_cubemap.vs", "shaders/10_fragment_cubemap.fs");
 	dynamicShader = new Shader("shaders/10_vertex_skinning-IT.vs", "shaders/10_fragment_skinning-IT.fs");
 
+	proceduralSatelite = new Shader("shaders/chema_ProceduralSat.vs", "shaders/chema_ProceduralSat.fs");
+	proceduralPlaneta = new Shader("shaders/12_ProceduralAnimation.vs", "shaders/12_ProceduralAnimation.fs");
+
 	// Máximo número de huesos: 100
 	dynamicShader->setBonesIDs(MAX_RIGGING_BONES);
 
@@ -247,6 +266,19 @@ bool Start() {
 	camion = new Model("models/ModelosFbx/Camion.fbx");
 	capsula = new Model("models/ModelosFbx/capsula.fbx");
 	bandera = new Model("models/ModelosFbx/bandera.fbx");
+
+	planeta0 = new Model("models/ModelosFbx/planeta.fbx");
+	planeta1 = new Model("models/ModelosFbx/planeta1.fbx");
+	planeta2 = new Model("models/ModelosFbx/planeta2.fbx");
+	planeta3 = new Model("models/ModelosFbx/planeta3.fbx");
+	cohete = new Model("models/ModelosFbx/coheteEspacial.fbx");
+	nave = new Model("models/ModelosFbx/nave.fbx");
+	satelite0 = new Model("models/ModelosFbx/satelite.fbx");
+	satelite1 = new Model("models/ModelosFbx/satelite1.fbx");
+	satelite2 = new Model("models/ModelosFbx/satelite2.fbx");
+	walle = new Model("models/ModelosFbx/walle.fbx");
+	amongUs = new Model("models/ModelosFbx/amongUs.fbx");
+	humo = new Model("models/ModelosFbx/humo.fbx");
 
 	lightDummy = new Model("models/ModelosFbx/lightDummy.fbx");
 
@@ -786,6 +818,46 @@ bool Update() {
 			m_copper_golem->Draw(*mLightsShader);
 		}
 
+		// WALLE
+		{
+			model = glm::mat4(1.0f);
+
+			float tiempo = currentFrame;
+			float offsetX = (sin(tiempo * 0.7f) * 3.0f) + (cos(tiempo * 1.3f) * 2.0f);
+			float offsetZ = (cos(tiempo * 0.5f) * 3.0f) + (sin(tiempo * 1.1f) * 2.0f);
+			float offsetY = abs(sin(tiempo * 4.0f)) * 0.2f + sin(tiempo * 1.5f) * 0.1f;
+			float velX = (0.7f * cos(tiempo * 0.7f) * 3.0f) - (1.3f * sin(tiempo * 1.3f) * 2.0f);
+			float velZ = -(0.5f * sin(tiempo * 0.5f) * 3.0f) + (1.1f * cos(tiempo * 1.1f) * 2.0f);
+			float angulo_orientacion = atan2(velX, velZ);
+			model = glm::translate(model, glm::vec3(10.0f + offsetX, 0.0f + offsetY, -25.0f + offsetZ));
+			model = glm::rotate(model, angulo_orientacion, glm::vec3(0.0f, 1.0f, 0.0f));
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+
+			mLightsShader->setMat4("model", model);
+			walle->Draw(*mLightsShader);
+		}
+
+		// AMONGUS
+		{
+			model = glm::mat4(1.0f);
+
+			float tiempo = currentFrame;
+			float offsetX = (sin(tiempo * 0.6f) * 1.0f) + (cos(tiempo * 1.7f) * 0.0f);
+			float offsetZ = (cos(tiempo * 0.3f) * 2.0f) + (sin(tiempo * 1.1f) * 1.0f);
+			float offsetY = abs(sin(tiempo * 4.0f)) * 0.2f + sin(tiempo * 1.5f) * 0.1f;
+			float velX = (0.7f * cos(tiempo * 0.7f) * 3.0f) + (1.3f * sin(tiempo * 1.3f) * 2.0f);
+			float velZ = -(0.5f * sin(tiempo * 0.5f) * 3.0f) - (1.1f * cos(tiempo * 1.1f) * 2.0f);
+			float angulo_orientacion = atan2(velX, velZ);
+			model = glm::translate(model, glm::vec3(5.0f + offsetX, 0.0f + offsetY, -15.0f + offsetZ));
+			model = glm::rotate(model, angulo_orientacion, glm::vec3(0.0f, 1.0f, 0.0f));
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+
+			mLightsShader->setMat4("model", model);
+			amongUs->Draw(*mLightsShader);
+		}
+
 	}
 		
 
@@ -821,6 +893,262 @@ bool Update() {
 
 	}
 
+	glUseProgram(0);
+
+	// NAVE
+	{
+		// Activamos el shader 
+		proceduralShader->use();
+
+		// Activamos para objetos transparentes
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		// Aplicamos transformaciones de proyección y cámara (si las hubiera)
+		proceduralShader->setMat4("projection", projection);
+		proceduralShader->setMat4("view", view);
+
+		// Aplicamos transformaciones del modelo
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(20.0f, 0.0f, 20.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		proceduralShader->setMat4("model", model);
+
+		proceduralShader->setFloat("time", proceduralTime);
+		proceduralShader->setFloat("radius", 20.0f);
+		proceduralShader->setFloat("height", 10.0f);
+
+		nave->Draw(*proceduralShader);
+		proceduralTime += 0.01;
+
+	}
+
+	glUseProgram(0);
+
+	// PLANETA
+	{
+		// Activamos el shader 
+		proceduralPlaneta->use();
+
+		// Activamos para objetos transparentes
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		// Aplicamos transformaciones de proyección y cámara (si las hubiera)
+		proceduralPlaneta->setMat4("projection", projection);
+		proceduralPlaneta->setMat4("view", view);
+
+		// Aplicamos transformaciones del modelo
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		proceduralPlaneta->setMat4("model", model);
+
+		proceduralPlaneta->setFloat("time", proceduralTime);
+		proceduralPlaneta->setFloat("a", 15.0f);
+		proceduralPlaneta->setFloat("m", 1.0f);
+
+		planeta0->Draw(*proceduralPlaneta);
+		proceduralTime += 0.00001;
+
+	}
+
+	glUseProgram(0);
+
+	// PLANETA 1
+	{
+		// Activamos el shader 
+		proceduralPlaneta->use();
+
+		// Activamos para objetos transparentes
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		// Aplicamos transformaciones de proyección y cámara (si las hubiera)
+		proceduralPlaneta->setMat4("projection", projection);
+		proceduralPlaneta->setMat4("view", view);
+
+		// Aplicamos transformaciones del modelo
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.5f, 0.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		proceduralPlaneta->setMat4("model", model);
+
+		proceduralPlaneta->setFloat("time", proceduralTime);
+		proceduralPlaneta->setFloat("a", 15.0f);
+		proceduralPlaneta->setFloat("m", 1.0f);
+
+		planeta1->Draw(*proceduralPlaneta);
+		proceduralTime += 0.00001;
+
+	}
+
+	glUseProgram(0);
+
+	// PLANETA 2
+	{
+		// Activamos el shader 
+		proceduralPlaneta->use();
+
+		// Activamos para objetos transparentes
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		// Aplicamos transformaciones de proyección y cámara (si las hubiera)
+		proceduralPlaneta->setMat4("projection", projection);
+		proceduralPlaneta->setMat4("view", view);
+
+		// Aplicamos transformaciones del modelo
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.5f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		proceduralPlaneta->setMat4("model", model);
+
+		proceduralPlaneta->setFloat("time", proceduralTime);
+		proceduralPlaneta->setFloat("a", 15.0f);
+		proceduralPlaneta->setFloat("m", 1.0f);
+
+		planeta2->Draw(*proceduralPlaneta);
+		proceduralTime += 0.00001;
+
+	}
+
+	glUseProgram(0);
+
+	// PLANETA 3
+	{
+		// Activamos el shader 
+		proceduralPlaneta->use();
+
+		// Activamos para objetos transparentes
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		// Aplicamos transformaciones de proyección y cámara (si las hubiera)
+		proceduralPlaneta->setMat4("projection", projection);
+		proceduralPlaneta->setMat4("view", view);
+
+		// Aplicamos transformaciones del modelo
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.25f, 0.75f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		proceduralPlaneta->setMat4("model", model);
+
+		proceduralPlaneta->setFloat("time", proceduralTime);
+		proceduralPlaneta->setFloat("a", 15.0f);
+		proceduralPlaneta->setFloat("m", 1.0f);
+
+		planeta3->Draw(*proceduralPlaneta);
+		proceduralTime += 0.00001;
+
+	}
+
+	glUseProgram(0);
+
+	// SATELITE
+	{
+		// Activamos el shader 
+		proceduralSatelite->use();
+
+		// Activamos para objetos transparentes
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		// Aplicamos transformaciones de proyección y cámara (si las hubiera)
+		proceduralSatelite->setMat4("projection", projection);
+		proceduralSatelite->setMat4("view", view);
+
+		// Aplicamos transformaciones del modelo
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		proceduralSatelite->setMat4("model", model);
+
+		proceduralSatelite->setFloat("time", proceduralTime);
+		proceduralSatelite->setFloat("horizontalSpeed", 0.5f);
+		proceduralSatelite->setFloat("radiusY", 60.0f);
+		proceduralSatelite->setFloat("radiusZ", 50.0f);
+		proceduralSatelite->setFloat("startX", -50.0f);
+
+		satelite0->Draw(*proceduralSatelite);
+		proceduralTime += 0.00001;
+
+	}
+
+	glUseProgram(0);
+	/*
+	// SATELITE 1
+	{
+		// Activamos el shader 
+		proceduralSatelite->use();
+
+		// Activamos para objetos transparentes
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		// Aplicamos transformaciones de proyección y cámara (si las hubiera)
+		proceduralSatelite->setMat4("projection", projection);
+		proceduralSatelite->setMat4("view", view);
+
+		// Aplicamos transformaciones del modelo
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		proceduralSatelite->setMat4("model", model);
+
+		proceduralSatelite->setFloat("time", proceduralTime);
+		proceduralSatelite->setFloat("horizontalSpeed", 0.5f);
+		proceduralSatelite->setFloat("radiusY", 60.0f);
+		proceduralSatelite->setFloat("radiusZ", 45.0f);
+		proceduralSatelite->setFloat("startX", -40.0f);
+
+		satelite1->Draw(*proceduralSatelite);
+		proceduralTime += 0.00001;
+
+	}
+
+	glUseProgram(0);
+
+	// SATELITE 2
+	{
+		// Activamos el shader 
+		proceduralSatelite->use();
+
+		// Activamos para objetos transparentes
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		// Aplicamos transformaciones de proyección y cámara (si las hubiera)
+		proceduralSatelite->setMat4("projection", projection);
+		proceduralSatelite->setMat4("view", view);
+
+		// Aplicamos transformaciones del modelo
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		proceduralSatelite->setMat4("model", model);
+
+		proceduralSatelite->setFloat("time", proceduralTime);
+		proceduralSatelite->setFloat("horizontalSpeed", 0.5f);
+		proceduralSatelite->setFloat("radiusY", 60.0f);
+		proceduralSatelite->setFloat("radiusZ", 75.0f);
+		proceduralSatelite->setFloat("startX", -30.0f);
+
+		satelite2->Draw(*proceduralSatelite);
+		proceduralTime += 0.00001;
+
+	}
+
+	glUseProgram(0);
+	*/
 	// BANDERA
 	{
 		// Activamos el shader
