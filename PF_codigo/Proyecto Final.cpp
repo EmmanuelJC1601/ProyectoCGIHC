@@ -147,6 +147,8 @@ Light lightM;
 Light lightSN1;
 Light lightSN2;
 Light lightSN3;
+Light lightEXC1;
+Light lightCUL;
 
 int meteorLightIndex;
 int farolIzqIndex;
@@ -340,6 +342,24 @@ bool Start() {
 	lightSN3.distance = 1.0f;
 	lightSN3.type = 0;
 	gLights.push_back(lightSN3);
+
+	//lightEXC1
+	lightEXC1.Position = glm::vec3(-26.3512f, 11.98f, -9.3925f);
+	lightEXC1.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	lightEXC1.Power = glm::vec4(50.0f, 50.0f, 50.0f, 1.0f);
+	lightEXC1.alphaIndex = 128;
+	lightEXC1.distance = 1.0f;
+	lightEXC1.type = 0;
+	gLights.push_back(lightEXC1);
+
+	//lightCUL
+	lightCUL.Position = glm::vec3(18.0336f, 5.0f, 7.49889f);
+	lightCUL.Color = glm::vec4(1.0f, 0.698f, 0.0f, 1.0f);
+	lightCUL.Power = glm::vec4(200.0f, 200.0f, 200.0f, 1.0f);
+	lightCUL.alphaIndex = 128;
+	lightCUL.distance = 1.0f;
+	lightCUL.type = 1;
+	gLights.push_back(lightCUL);
 
 	// LightTorre1
 	Light lightT1;
