@@ -83,14 +83,6 @@ float capsule_offset = 0.0f;
 float capsule_speed = 0.009f;
 float capsule_max = 2.0f;
 bool going_up = true;
-// --- Variables para la sonda Juno ---
-// Sonda 1: Juno
-float angulo_juno = 0.0f;
-float velocidad_juno = 0.5f;
-
-// Sonda 2: Voyager
-float angulo_voyager = 3.14159f; // Desfase inicial de 180 grados (PI)
-float velocidad_voyager = 0.65f;
 
 
 
@@ -114,11 +106,6 @@ Model* supernova;
 Model* camion;
 Model* capsula;
 Model* bandera;
-Model* sonda_juno;
-Model* sonda_voyager;
-Model* kiko_marciano;
-Model* m_copper_golem;
-Model* m_transport_robot;
 
 Model* planeta0;
 Model* planeta1;
@@ -283,12 +270,6 @@ bool Start() {
 	lightDummy = new Model("models/ModelosFbx/lightDummy.fbx");
 
 	character01 = new AnimatedModel("models/ModelosFbx/astronauta_walk.fbx");
-	//modelo de la sonda
-	sonda_juno = new Model("models/ModelosFbx/sonda juno.fbx");
-	sonda_voyager = new Model("models/ModelosFbx/sonda voyager.fbx");
-	kiko_marciano = new Model("models/ModelosFbx/kiko_marciano.fbx");
-	m_copper_golem = new Model("models/ModelosFbx/copper golem.fbx");
-	m_transport_robot = new Model("models/ModelosFbx/Transport_Robot.fbx");
 
 	// Cubemap 
 	vector<std::string> faces
@@ -611,38 +592,6 @@ bool Update() {
 		model = glm::scale(model, glm::vec3(0.2f + meteor_size, 0.1f + meteor_size, 0.1f + meteor_size));
 		mLightsShader->setMat4("model", model);
 		meteoro->Draw(*mLightsShader);
-		
-		// 1. Integracion paramétrica para ambas órbitas
-		angulo_juno += velocidad_juno * deltaTime;
-		angulo_voyager += velocidad_voyager * deltaTime;
-
-		// Sonda juno
-		float centro_juno_x = -21.6288f;
-		float centro_juno_z = 36.3215f;
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(centro_juno_x, 40.0f, centro_juno_z));
-		model = glm::rotate(model, glm::radians(-15.0f), glm::vec3(0.0f, 0.0f, 1.0f)); 
-		model = glm::rotate(model, -angulo_juno, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::translate(model, glm::vec3(35.0f, 0.0f, 0.0f)); 
-		model = glm::scale(model, glm::vec3(0.50f, 0.5f, 0.50f));
-
-		mLightsShader->setMat4("model", model);
-		sonda_juno->Draw(*mLightsShader);
-
-		// Sonda voyager
-		float centro_voyager_x =10.0f;
-		float centro_voyager_z = -20.0f;
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(centro_voyager_x, 45.0f, centro_voyager_z));
-		model = glm::rotate(model, glm::radians(25.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, -angulo_voyager, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::translate(model, glm::vec3(45.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.50f, 0.5f, 0.50f));
-
-		mLightsShader->setMat4("model", model);
-		sonda_voyager->Draw(*mLightsShader);
 
 		// Excavadora
 		model = glm::mat4(1.0f);
@@ -688,135 +637,6 @@ bool Update() {
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		mLightsShader->setMat4("model", model);
 		capsula->Draw(*mLightsShader);
-
-
-		// marcianos
-		glm::vec3 posicionesKiko[5] = {
-			glm::vec3(21.0f, 0.1f, -10.0f), 
-			glm::vec3(25.0f, 0.3f, -15.0f), 
-			glm::vec3(30.0f, 0.8f, -10.0f), 
-			glm::vec3(34.0f, 1.0f, -15.0f), 
-			glm::vec3(40.0f, 1.2f, -10.0f)  
-		};
-
-		float rotacionBaseKiko[5] = {
-			60.0f,
-			30.0f,
-			180.0f,
-			-30.0f,
-			-60.0f
-		};
-
-		for (int i = 0; i < 5; i++) {
-			float tiempoDesfasado = currentFrame + (i * 0.8f);
-			float idle_rotation = sin(tiempoDesfasado * 1.5f) * 20.0f;
-			float idle_hover = sin(tiempoDesfasado * 2.0f) * 0.3f;
-			float rotacionTotal = rotacionBaseKiko[i] + idle_rotation;
-
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, posicionesKiko[i] + glm::vec3(0.0f, idle_hover, 0.0f));
-			model = glm::rotate(model, glm::radians(rotacionTotal), glm::vec3(0.0f, 1.0f, 0.0f));
-			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-			model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-			mLightsShader->setMat4("model", model);
-			kiko_marciano->Draw(*mLightsShader);
-		}
-
-		
-		// Laser
-		if (laserActivo) {
-			// Cálculo distancia
-			float avance = velocidadLaser * deltaTime;
-			distanciaLaser += avance;
-			posicionLaser.x += avance * sin(anguloLaser);
-			posicionLaser.z += avance * cos(anguloLaser);
-
-			if (distanciaLaser >= 20.0f) {
-				laserActivo = false;
-			}
-			else {
-				float alphaLaser = 1.0f - (distanciaLaser / 20.0f);
-				model = glm::mat4(1.0f);
-				model = glm::translate(model, posicionLaser);
-				model = glm::rotate(model, anguloLaser, glm::vec3(0.0f, 1.0f, 0.0f));
-				model = glm::scale(model, glm::vec3(0.08f, 0.08f, 1.2f));
-
-				mLightsShader->setMat4("model", model);
-				mLightsShader->setVec4("MaterialAmbientColor", glm::vec4(colorLaser * 2.0f, alphaLaser));
-				mLightsShader->setVec4("MaterialDiffuseColor", glm::vec4(colorLaser, alphaLaser));
-				mLightsShader->setFloat("transparency", alphaLaser);
-				lightDummy->Draw(*mLightsShader);
-				mLightsShader->setVec4("MaterialAmbientColor", material.ambient);
-				mLightsShader->setVec4("MaterialDiffuseColor", material.diffuse);
-				mLightsShader->setFloat("transparency", 1.0f);
-			}
-		}
-
-		{
-			model = glm::mat4(1.0f);
-			float distancia_maxima = 35.0f;
-			float velocidad_robot = 2.0f;
-			float ciclo_total = distancia_maxima * 2.0f;
-			float distancia_actual = glm::mod(currentFrame * velocidad_robot, ciclo_total);
-			float offsetZ = 0.0f;
-			float angulo_orientacion = 0.0f;
-			glm::vec3 forward_dir;
-			if (distancia_actual < distancia_maxima) {
-				offsetZ = distancia_actual;
-				angulo_orientacion = glm::radians(90.0f);
-				forward_dir = glm::vec3(0.0f, 0.0f, 1.0f); 
-			}
-			else {
-				offsetZ = distancia_maxima - (distancia_actual - distancia_maxima);
-				angulo_orientacion = glm::radians(270.0f);
-				forward_dir = glm::vec3(0.0f, 0.0f, -1.0f);
-			}
-
-			// Faros
-			float altura_faros = 1.2f;
-			glm::vec3 pos_robot = glm::vec3(-23.0f, altura_faros, -8.0f + offsetZ);
-			float front_offset = 2.5f;
-			float side_offset = 1.0f;
-			glm::vec3 right_dir = glm::vec3(1.0f, 0.0f, 0.0f);
-
-			gLights[farolIzqIndex].Position = pos_robot + (forward_dir * front_offset) - (right_dir * side_offset);
-			gLights[farolIzqIndex].Direction = forward_dir;
-
-			gLights[farolDerIndex].Position = pos_robot + (forward_dir * front_offset) + (right_dir * side_offset);
-			gLights[farolDerIndex].Direction = forward_dir;
-
-			SetLightUniformVec3(mLightsShader, "Position", farolIzqIndex, gLights[farolIzqIndex].Position);
-			SetLightUniformVec3(mLightsShader, "Direction", farolIzqIndex, gLights[farolIzqIndex].Direction);
-			SetLightUniformVec3(mLightsShader, "Position", farolDerIndex, gLights[farolDerIndex].Position);
-			SetLightUniformVec3(mLightsShader, "Direction", farolDerIndex, gLights[farolDerIndex].Direction);
-			model = glm::translate(model, glm::vec3(-23.0f, 0.0f, -8.0f + offsetZ));
-			model = glm::rotate(model, angulo_orientacion, glm::vec3(0.0f, 1.0f, 0.0f));
-			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-
-			mLightsShader->setMat4("model", model);
-			m_transport_robot->Draw(*mLightsShader);
-		}
-
-		// Copper Golem
-		{
-			model = glm::mat4(1.0f);
-
-			float tiempo = currentFrame;
-			float offsetX = (sin(tiempo * 0.7f) * 3.0f) + (cos(tiempo * 1.3f) * 2.0f);
-			float offsetZ = (cos(tiempo * 0.5f) * 3.0f) + (sin(tiempo * 1.1f) * 2.0f);
-			float offsetY = abs(sin(tiempo * 4.0f)) * 0.2f + sin(tiempo * 1.5f) * 0.1f;
-			float velX = (0.7f * cos(tiempo * 0.7f) * 3.0f) - (1.3f * sin(tiempo * 1.3f) * 2.0f);
-			float velZ = -(0.5f * sin(tiempo * 0.5f) * 3.0f) + (1.1f * cos(tiempo * 1.1f) * 2.0f);
-			float angulo_orientacion = atan2(velX, velZ);
-			model = glm::translate(model, glm::vec3(-6.0f + offsetX, 0.0f + offsetY, 32.0f + offsetZ));
-			model = glm::rotate(model, angulo_orientacion, glm::vec3(0.0f, 1.0f, 0.0f));
-			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-
-			mLightsShader->setMat4("model", model);
-			m_copper_golem->Draw(*mLightsShader);
-		}
 
 		// WALLE
 		{
