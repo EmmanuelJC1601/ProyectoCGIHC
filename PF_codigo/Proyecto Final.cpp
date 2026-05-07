@@ -84,7 +84,7 @@ float capsule_speed = 0.009f;
 float capsule_max = 2.0f;
 bool going_up = true;
 
-
+float cohete_height = 0.00f;
 
 // Shaders
 Shader* mLightsShader;
@@ -621,6 +621,15 @@ bool Update() {
 		mLightsShader->setMat4("model", model);
 		supernova->Draw(*mLightsShader);
 
+		//COHETE
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, cohete_height, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		mLightsShader->setMat4("model", model);
+		cohete->Draw(*mLightsShader);
+
 		//Light dummy
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, lightM.Position); // translate it down so it's at the center of the scene
@@ -651,13 +660,13 @@ bool Update() {
 			model = glm::mat4(1.0f);
 
 			float tiempo = currentFrame;
-			float offsetX = (sin(tiempo * 0.7f) * 3.0f) + (cos(tiempo * 1.3f) * 2.0f);
-			float offsetZ = (cos(tiempo * 0.5f) * 3.0f) + (sin(tiempo * 1.1f) * 2.0f);
-			float offsetY = abs(sin(tiempo * 4.0f)) * 0.2f + sin(tiempo * 1.5f) * 0.1f;
-			float velX = (0.7f * cos(tiempo * 0.7f) * 3.0f) - (1.3f * sin(tiempo * 1.3f) * 2.0f);
-			float velZ = -(0.5f * sin(tiempo * 0.5f) * 3.0f) + (1.1f * cos(tiempo * 1.1f) * 2.0f);
+			float offsetX = (sin(tiempo * 0.06f) * 0.10f) + (cos(tiempo * 0.107f) * 0.0f);
+			float offsetZ = (cos(tiempo * 0.03f) * 0.20f) + (sin(tiempo * 0.101f) * 0.10f);
+			float offsetY = abs(sin(tiempo * 0.40f)) * 0.02f + sin(tiempo * 0.105f) * 0.1f;
+			float velX = (0.07f * cos(tiempo * 0.07f) * 0.30f) + (0.103f * sin(tiempo * 0.103f) * 0.20f);
+			float velZ = -(0.05f * sin(tiempo * 0.05f) * 0.30f) - (0.101f * cos(tiempo * 0.101f) * 0.20f);
 			float angulo_orientacion = atan2(velX, velZ);
-			model = glm::translate(model, glm::vec3(9.58151f + offsetX, 4.76404f + offsetY, -58.8634f + offsetZ));
+			model = glm::translate(model, glm::vec3(5.0f + offsetX, 0.0f + offsetY, 0.0f + offsetZ));
 			model = glm::rotate(model, angulo_orientacion, glm::vec3(0.0f, 1.0f, 0.0f));
 			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
@@ -677,7 +686,7 @@ bool Update() {
 			float velX = (0.7f * cos(tiempo * 0.7f) * 3.0f) + (1.3f * sin(tiempo * 1.3f) * 2.0f);
 			float velZ = -(0.5f * sin(tiempo * 0.5f) * 3.0f) - (1.1f * cos(tiempo * 1.1f) * 2.0f);
 			float angulo_orientacion = atan2(velX, velZ);
-			model = glm::translate(model, glm::vec3(5.0f + offsetX, 0.0f + offsetY, -15.0f + offsetZ));
+			model = glm::translate(model, glm::vec3(5.0f + offsetX, 1.5f + offsetY, 0.0f + offsetZ));
 			model = glm::rotate(model, angulo_orientacion, glm::vec3(0.0f, 1.0f, 0.0f));
 			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
@@ -746,13 +755,17 @@ bool Update() {
 
 		// Aplicamos transformaciones del modelo
 		glm::mat4 model = glm::mat4(1.0f);
+<<<<<<< Updated upstream
 		model = glm::translate(model, glm::vec3(28.3071f, 1.61172f, 4.82495f));
+=======
+		model = glm::translate(model, glm::vec3(27.5f, 0.0f, 5.0f));
+>>>>>>> Stashed changes
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		proceduralShader->setMat4("model", model);
 
 		proceduralShader->setFloat("time", proceduralTime);
-		proceduralShader->setFloat("radius", 17.82f);
+		proceduralShader->setFloat("radius", 25.0f);
 		proceduralShader->setFloat("height", 0.0f);
 
 		camion->Draw(*proceduralShader);
@@ -810,11 +823,11 @@ bool Update() {
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+			model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 			proceduralPlaneta->setMat4("model", model);
 
 			proceduralPlaneta->setFloat("time", proceduralTime);
-			proceduralPlaneta->setFloat("a", 15.0f);
+			proceduralPlaneta->setFloat("a", 30.0f);
 			proceduralPlaneta->setFloat("m", 1.0f);
 
 			planeta0->Draw(*proceduralPlaneta);
@@ -841,11 +854,11 @@ bool Update() {
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.5f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 		proceduralPlaneta->setMat4("model", model);
 
 		proceduralPlaneta->setFloat("time", proceduralTime);
-		proceduralPlaneta->setFloat("a", 415.0f);
+		proceduralPlaneta->setFloat("a", 300.0f);
 		proceduralPlaneta->setFloat("m", 1.0f);
 
 		planeta1->Draw(*proceduralPlaneta);
@@ -876,7 +889,7 @@ bool Update() {
 		proceduralPlaneta->setMat4("model", model);
 
 		proceduralPlaneta->setFloat("time", proceduralTime);
-		proceduralPlaneta->setFloat("a", 15.0f);
+		proceduralPlaneta->setFloat("a", 30.0f);
 		proceduralPlaneta->setFloat("m", 1.0f);
 
 		planeta2->Draw(*proceduralPlaneta);
@@ -907,7 +920,7 @@ bool Update() {
 		proceduralPlaneta->setMat4("model", model);
 
 		proceduralPlaneta->setFloat("time", proceduralTime);
-		proceduralPlaneta->setFloat("a", 280.687f);
+		proceduralPlaneta->setFloat("a", 300.0f);
 		proceduralPlaneta->setFloat("m", 1.0f);
 
 		planeta3->Draw(*proceduralPlaneta);
@@ -919,176 +932,119 @@ bool Update() {
 
 	// SATELITE
 	{
-		// Activamos el shader 
 		proceduralSatelite->use();
-
-		// Activamos para objetos transparentes
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		// Aplicamos transformaciones de proyección y cámara (si las hubiera)
 		proceduralSatelite->setMat4("projection", projection);
 		proceduralSatelite->setMat4("view", view);
-
-		// Aplicamos transformaciones del modelo
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		proceduralSatelite->setMat4("model", model);
-
 		proceduralSatelite->setFloat("time", proceduralTime);
-		proceduralSatelite->setFloat("horizontalSpeed", 0.5f);
-		proceduralSatelite->setFloat("radiusY", 200.0f);
-		proceduralSatelite->setFloat("radiusZ", 150.0f);
-		proceduralSatelite->setFloat("startX", 15.8576f);
-
+		proceduralSatelite->setFloat("a", 2.0f);
+		proceduralSatelite->setFloat("b", 2.0f);
+		proceduralSatelite->setFloat("n", 10.0f);
+		proceduralSatelite->setFloat("m", 4.0f);
 		satelite0->Draw(*proceduralSatelite);
-
-		proceduralSatelite->setFloat("startX", -4.81452f);
-		satelite1->Draw(*proceduralSatelite);
-
-		proceduralSatelite->setFloat("startX", -23.8376f);
-		satelite2->Draw(*proceduralSatelite);
-
-
 		proceduralTime += 0.00001;
-
 	}
 
 	glUseProgram(0);
-	
+
 	// SATELITE 1
 	{
-		// Activamos el shader
 		proceduralSatelite->use();
-
-		// Activamos para objetos transparentes
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		// Aplicamos transformaciones de proyección y cámara (si las hubiera)
 		proceduralSatelite->setMat4("projection", projection);
 		proceduralSatelite->setMat4("view", view);
-
-		// Aplicamos transformaciones del modelo
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		proceduralSatelite->setMat4("model", model);
-
 		proceduralSatelite->setFloat("time", proceduralTime);
-		proceduralSatelite->setFloat("horizontalSpeed", 0.5f);
-		proceduralSatelite->setFloat("radiusY", 60.0f);
-		proceduralSatelite->setFloat("radiusZ", 45.0f);
-		proceduralSatelite->setFloat("startX", -40.0f);
-
+		proceduralSatelite->setFloat("a", 2.0f);
+		proceduralSatelite->setFloat("b", 2.0f);
+		proceduralSatelite->setFloat("n", 10.0f);
+		proceduralSatelite->setFloat("m", 4.0f);
 		satelite1->Draw(*proceduralSatelite);
 		proceduralTime += 0.00001;
-
 	}
 
 	glUseProgram(0);
 
 	// SATELITE 2
 	{
-		// Activamos el shader
 		proceduralSatelite->use();
-
-		// Activamos para objetos transparentes
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		// Aplicamos transformaciones de proyección y cámara (si las hubiera)
 		proceduralSatelite->setMat4("projection", projection);
 		proceduralSatelite->setMat4("view", view);
-
-		// Aplicamos transformaciones del modelo
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		proceduralSatelite->setMat4("model", model);
-
 		proceduralSatelite->setFloat("time", proceduralTime);
-		proceduralSatelite->setFloat("horizontalSpeed", 0.5f);
-		proceduralSatelite->setFloat("radiusY", 60.0f);
-		proceduralSatelite->setFloat("radiusZ", 75.0f);
-		proceduralSatelite->setFloat("startX", -30.0f);
-
+		proceduralSatelite->setFloat("a", 2.0f);
+		proceduralSatelite->setFloat("b", 2.0f);
+		proceduralSatelite->setFloat("n", 10.0f);
+		proceduralSatelite->setFloat("m", 5.0f);
 		satelite2->Draw(*proceduralSatelite);
 		proceduralTime += 0.00001;
-
 	}
 
 	glUseProgram(0);
-	
+
 	// SATELITE 3
 	{
-		// Activamos el shader
 		proceduralSatelite->use();
-
-		// Activamos para objetos transparentes
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		// Aplicamos transformaciones de proyección y cámara (si las hubiera)
 		proceduralSatelite->setMat4("projection", projection);
 		proceduralSatelite->setMat4("view", view);
-
-		// Aplicamos transformaciones del modelo
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		proceduralSatelite->setMat4("model", model);
-
 		proceduralSatelite->setFloat("time", proceduralTime);
-		proceduralSatelite->setFloat("horizontalSpeed", 0.5f);
-		proceduralSatelite->setFloat("radiusY", 60.0f);
-		proceduralSatelite->setFloat("radiusZ", 75.0f);
-		proceduralSatelite->setFloat("startX", -30.0f);
-
+		proceduralSatelite->setFloat("a", 2.0f);
+		proceduralSatelite->setFloat("b", 2.0f);
+		proceduralSatelite->setFloat("n", 10.0f);
+		proceduralSatelite->setFloat("m", 6.0f);
 		satelite3->Draw(*proceduralSatelite);
 		proceduralTime += 0.00001;
-
 	}
 
 	glUseProgram(0);
 
 	// SATELITE 4
 	{
-		// Activamos el shader
 		proceduralSatelite->use();
-
-		// Activamos para objetos transparentes
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		// Aplicamos transformaciones de proyección y cámara (si las hubiera)
 		proceduralSatelite->setMat4("projection", projection);
 		proceduralSatelite->setMat4("view", view);
-
-		// Aplicamos transformaciones del modelo
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		proceduralSatelite->setMat4("model", model);
-
 		proceduralSatelite->setFloat("time", proceduralTime);
-		proceduralSatelite->setFloat("horizontalSpeed", 0.5f);
-		proceduralSatelite->setFloat("radiusY", 60.0f);
-		proceduralSatelite->setFloat("radiusZ", 75.0f);
-		proceduralSatelite->setFloat("startX", -30.0f);
-
+		proceduralSatelite->setFloat("a", 2.0f);
+		proceduralSatelite->setFloat("b", 2.0f);
+		proceduralSatelite->setFloat("n", 10.0f);
+		proceduralSatelite->setFloat("m", 7.0f);
 		satelite4->Draw(*proceduralSatelite);
 		proceduralTime += 0.00001;
-
 	}
 
 	glUseProgram(0);
+
 	// BANDERA
 	{
 		// Activamos el shader
@@ -1219,6 +1175,10 @@ void processInput(GLFWwindow* window)
 	}
 	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_RELEASE) {
 		keyPressed = false;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+		cohete_height += 0.05f;
 	}
 
 	// --- NUEVO: Activador del Láser con Tecla K ---
