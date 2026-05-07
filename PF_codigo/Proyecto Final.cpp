@@ -97,6 +97,9 @@ Shader* dynamicShader;
 Shader* proceduralSatelite;
 Shader* proceduralPlaneta;
 
+Shader* fresnelMetalShader;
+Shader* fresnelVidrioShader;
+
 // CARGAR MODELOS
 Model* PF_MATE;
 Model* PF_METAL;
@@ -248,6 +251,9 @@ bool Start() {
 
 	proceduralSatelite = new Shader("shaders/chema_ProceduralSat.vs", "shaders/chema_ProceduralSat.fs");
 	proceduralPlaneta = new Shader("shaders/12_ProceduralAnimation.vs", "shaders/12_ProceduralAnimation.fs");
+
+	fresnelMetalShader = new Shader("shaders/11_fresnel.vs", "shaders/11_fresnel_metal.fs");
+	fresnelVidrioShader = new Shader("shaders/11_fresnel.vs", "shaders/11_fresnel_vidrio.fs");
 
 	// Máximo número de huesos: 100
 	dynamicShader->setBonesIDs(MAX_RIGGING_BONES);
@@ -585,12 +591,10 @@ bool Update() {
 
 		// PF
 		PF_MATE->Draw(*mLightsShader);
-		PF_METAL->Draw(*mLightsShader);
-		PF_CRISTAL->Draw(*mLightsShader);
 
 		//Meteorito
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f + meteor_offset, 0.0f - meteor_offset, 0.0f)); // translate it down so it's at the center of the scene
+		model = glm::translate(model, glm::vec3(-88.7501f + meteor_offset, 68.6332f - meteor_offset, 36.3215f)); // translate it down so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.2f + meteor_size, 0.1f + meteor_size, 0.1f + meteor_size));
@@ -599,7 +603,7 @@ bool Update() {
 
 		// Excavadora
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+		model = glm::translate(model, glm::vec3(-37.5564f, 14.4908f, -35.5709f)); // translate it down so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
 		model = glm::rotate(model, glm::radians(excavadora_rotation), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -608,7 +612,7 @@ bool Update() {
 
 		// Supernova
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+		model = glm::translate(model, glm::vec3(-279.089f, 50.6231f, 31.1289f)); // translate it down so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
 		model = glm::rotate(model, glm::radians(supernova_rotation), glm::vec3(-0.407f, -0.816f, 0.411f));
 		model = glm::rotate(model, glm::radians(29.1885f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -636,7 +640,7 @@ bool Update() {
 			if (capsule_offset <= 0.0f) going_up = true;
 		}
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, capsule_offset + 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(9.58151f, capsule_offset + 4.76404f, -58.8634f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		mLightsShader->setMat4("model", model);
@@ -673,7 +677,7 @@ bool Update() {
 			float velX = (0.7f * cos(tiempo * 0.7f) * 3.0f) + (1.3f * sin(tiempo * 1.3f) * 2.0f);
 			float velZ = -(0.5f * sin(tiempo * 0.5f) * 3.0f) - (1.1f * cos(tiempo * 1.1f) * 2.0f);
 			float angulo_orientacion = atan2(velX, velZ);
-			model = glm::translate(model, glm::vec3(5.0f + offsetX, 0.0f + offsetY, -10.0f + offsetZ));
+			model = glm::translate(model, glm::vec3(5.0f + offsetX, 0.0f + offsetY, -15.0f + offsetZ));
 			model = glm::rotate(model, angulo_orientacion, glm::vec3(0.0f, 1.0f, 0.0f));
 			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
@@ -683,8 +687,47 @@ bool Update() {
 		}
 
 	}
+	glUseProgram(0);
 
+	{
+		fresnelMetalShader->use();
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		fresnelMetalShader->setMat4("projection", projection);
+		fresnelMetalShader->setMat4("view", view);
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		fresnelMetalShader->setMat4("model", model);
+		fresnelMetalShader->setVec3("cameraPosition", camera.Position);
+		fresnelMetalShader->setFloat("mRefractionRatio", 1.0f / 2.5f);
+		fresnelMetalShader->setFloat("_Bias", 0.1f);
+		fresnelMetalShader->setFloat("_Scale", 1.0f);
+		fresnelMetalShader->setFloat("_Power", 3.0f);
+		PF_METAL->Draw(*fresnelMetalShader);
+	}
+	glUseProgram(0);
 
+	{
+		fresnelVidrioShader->use();
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		fresnelVidrioShader->setMat4("projection", projection);
+		fresnelVidrioShader->setMat4("view", view);
+
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		fresnelVidrioShader->setMat4("model", model);
+		fresnelVidrioShader->setVec3("cameraPosition", camera.Position);
+		fresnelVidrioShader->setFloat("mRefractionRatio", 1.0f / 1.5f); // vidrio
+		fresnelVidrioShader->setFloat("_Bias", 0.5f);
+		fresnelVidrioShader->setFloat("_Scale", 0.5f);
+		fresnelVidrioShader->setFloat("_Power", 2.0f);
+		PF_CRISTAL->Draw(*fresnelVidrioShader);
+	}
 	glUseProgram(0);
 
 
@@ -703,7 +746,7 @@ bool Update() {
 
 		// Aplicamos transformaciones del modelo
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(28.3071f, 1.61172f, 4.82495f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		proceduralShader->setMat4("model", model);
@@ -734,7 +777,7 @@ bool Update() {
 
 		// Aplicamos transformaciones del modelo
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(-4.96295f, 42.1318f, -89.7294f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		proceduralShader->setMat4("model", model);
@@ -1058,7 +1101,7 @@ bool Update() {
 		wavesShader->setMat4("view", view);
 		// Aplicamos transformaciones del modelo
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(-12.5151f, 4.01237f, 15.2939f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		wavesShader->setMat4("model", model);
