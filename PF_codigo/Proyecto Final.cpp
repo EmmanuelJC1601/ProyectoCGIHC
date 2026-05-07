@@ -755,11 +755,7 @@ bool Update() {
 
 		// Aplicamos transformaciones del modelo
 		glm::mat4 model = glm::mat4(1.0f);
-<<<<<<< Updated upstream
-		model = glm::translate(model, glm::vec3(28.3071f, 1.61172f, 4.82495f));
-=======
 		model = glm::translate(model, glm::vec3(27.5f, 0.0f, 5.0f));
->>>>>>> Stashed changes
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		proceduralShader->setMat4("model", model);
