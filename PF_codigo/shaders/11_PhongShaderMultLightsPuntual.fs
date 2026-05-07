@@ -45,7 +45,7 @@ vec4 ApplyLight(Light light, vec3 N, vec3 E) {
         // LUCES POSICIONALES (PUNTO Y FOCO)
         L = normalize(light.Position - FragPos);
         float d = length(light.Position - FragPos);
-        attenuation = light.Power.x / (d * d + 1.0);
+        attenuation = light.Power.x / (d  + 1.0);
 
         // Si es FOCO, aplicamos el cono de restricción
         if (light.type == 1) { 

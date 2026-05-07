@@ -1,5 +1,5 @@
 /*
-* 
+*
 * Equipo 3 CGIHC
 */
 
@@ -38,7 +38,7 @@ bool Update();
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow *window);
+void processInput(GLFWwindow* window);
 
 // Gobals
 GLFWwindow* window;
@@ -87,21 +87,21 @@ bool going_up = true;
 
 
 // Shaders
-Shader *mLightsShader;
-Shader *proceduralShader;
-Shader *wavesShader;
+Shader* mLightsShader;
+Shader* proceduralShader;
+Shader* wavesShader;
 
-Shader *cubemapShader;
-Shader *dynamicShader;
+Shader* cubemapShader;
+Shader* dynamicShader;
 
-Shader *proceduralSatelite;
-Shader *proceduralPlaneta;
+Shader* proceduralSatelite;
+Shader* proceduralPlaneta;
 
 // CARGAR MODELOS
 Model* MAESTRO;
 Model* meteoro;
 Model* lightDummy;
-Model* excavadora;	
+Model* excavadora;
 Model* supernova;
 Model* camion;
 Model* capsula;
@@ -121,14 +121,14 @@ Model* amongUs;
 Model* humo;
 
 // MODELOS ANIMADOS
-AnimatedModel   *character01;
+AnimatedModel* character01;
 
 float tradius = 10.0f;
 float theta = 0.0f;
 float alpha = 0.0f;
 
 // Cubemap
-CubeMap *mainCubeMap;
+CubeMap* mainCubeMap;
 
 // Light gLight;
 std::vector<Light> gLights;
@@ -141,7 +141,7 @@ float proceduralTime = 0.0f;
 float wavesTime = 0.0f;
 
 // Audio
-ISoundEngine *SoundEngine = createIrrKlangDevice();
+ISoundEngine* SoundEngine = createIrrKlangDevice();
 
 // selección de cámara
 bool    activeCamera = 1; // activamos la primera cámara
@@ -151,9 +151,12 @@ Light lightSN1;
 Light lightSN2;
 Light lightSN3;
 Light lightEXC1;
+glm::vec3 pivoteEXC1 = glm::vec3(-37.5564f, 14.4908f, -35.5709f);
 Light lightCUL;
 
 int meteorLightIndex;
+float anguloexcavadora = 1.0f;
+int excaLightIndex;
 int farolIzqIndex;
 int farolDerIndex;
 
@@ -274,12 +277,12 @@ bool Start() {
 	// Cubemap 
 	vector<std::string> faces
 	{
-		"textures/cubemap/01/posx.jpg", 
-		"textures/cubemap/01/negx.jpg", 
-		"textures/cubemap/01/posy.jpg", 
-		"textures/cubemap/01/negy.jpg", 
-		"textures/cubemap/01/posz.jpg", 
-		"textures/cubemap/01/negz.jpg"  
+		"textures/cubemap/01/posx.jpg",
+		"textures/cubemap/01/negx.jpg",
+		"textures/cubemap/01/posy.jpg",
+		"textures/cubemap/01/negy.jpg",
+		"textures/cubemap/01/posz.jpg",
+		"textures/cubemap/01/negz.jpg"
 	};
 	mainCubeMap = new CubeMap();
 	mainCubeMap->loadCubemap(faces);
@@ -290,133 +293,129 @@ bool Start() {
 	camera3rd.Front = forwardView;
 
 	// Lights configuration
+
+	//Luz global
 	Light light;
 	light.type = 2; // Sol
-	light.Direction = glm::vec3(-0.2f, -1.0f, -0.3f); 
+	light.Direction = glm::vec3(-0.2f, -1.0f, -0.3f);
 	light.Power = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	gLights.push_back(light);
 
-	Light light2;
-	light2.Position = glm::vec3(-7.23106f, 2.43386f, -12.3568f);
-	light2.Direction = glm::vec3(0.0f, -1.0f, 0.0f);
-	light2.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	light2.Power = glm::vec4(40.0f, 40.0f, 40.0f, 1.0f);
-	light2.alphaIndex = 128;
-	light2.distance = 3.0f;
-	light2.cutOff = glm::cos(glm::radians(89.0f)); 
-	light2.outerCutOff = glm::cos(glm::radians(85.0f)); 
-	light2.type = 1;
-	gLights.push_back(light2);
 
+	/*	//Estacionamiento
+		Light light2;
+		light2.Position = glm::vec3(-12.9147f, 5.0f, -42.8472f);
+		light2.Direction = glm::vec3(0.0f, -1.0f, 0.0f);
+		light2.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		light2.Power = glm::vec4(15.0f, 15.0f, 15.0f, 1.0f);
+		light2.alphaIndex = 128;
+		light2.distance = 300.0f;
+		light2.cutOff = glm::cos(glm::radians(10.0f));
+		light2.outerCutOff = glm::cos(glm::radians(60.0f));
+		light2.type = 1;
+		gLights.push_back(light2);*/
+
+		//Residuos
 	Light light3;
-	light3.Position = glm::vec3(12.492, 3.0, 30.4636f);
+	light3.Position = glm::vec3(30.7683f, 3.0, 44.3768f);
 	light3.Color = glm::vec4(0.5f, 1.0f, 0.0f, 1.0f);
-	light3.Power = glm::vec4(40.0f, 40.0f, 40.0f, 1.0f);
+	light3.Power = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
 	light3.alphaIndex = 256;
-	light3.distance = 3.0f;
 	light3.type = 0;
 	gLights.push_back(light3);
 
 
 	//LightM
-	lightM.Position = glm::vec3(-17.4583f, 21.3668f, 36.7405f);
+	lightM.Position = glm::vec3(-78.9523f, 61.0171f, 36.4292f);
 	lightM.Color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	lightM.Power = glm::vec4(80.0f, 80.0f, 80.0f, 1.0f);
+	lightM.Power = glm::vec4(50.0f, 50.0f, 50.0f, 1.0f);
 	lightM.alphaIndex = 128;
-	lightM.distance = 1.0f;
+	lightM.distance = 100.0f;
 	lightM.type = 0;
 	gLights.push_back(lightM);
 	meteorLightIndex = gLights.size() - 1;
 
+
 	//LightSN1
-	lightSN1.Position = glm::vec3(-106.488f, 46.5978f, 31.1536f);
+	lightSN1.Position = glm::vec3(-279.089f, 50.6231f, 31.1289f);
 	lightSN1.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	lightSN1.Power = glm::vec4(200.0f, 200.0f, 200.0f, 1.0f);
+	lightSN1.Power = glm::vec4(100.0f, 100.0f, 100.0f, 1.0f);
 	lightSN1.alphaIndex = 128;
-	lightSN1.distance = 1.0f;
+	lightSN1.distance = 100.0f;
 	lightSN1.type = 0;
 	gLights.push_back(lightSN1);
 
 
-	//LightSN2
-	lightSN2.Position = glm::vec3(-117.842f, 46.5978f, 23.2239f);
-	lightSN2.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	lightSN2.Power = glm::vec4(200.0f, 200.0f, 200.0f, 1.0f);
-	lightSN2.alphaIndex = 128;
-	lightSN2.distance = 1.0f;
-	lightSN2.type = 0;
-	gLights.push_back(lightSN2);
-
-	//LightSN3
-	lightSN3.Position = glm::vec3(-118.563f, -39.0834f, 51.644f);
-	lightSN3.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	lightSN3.Power = glm::vec4(200.0f, 200.0f, 200.0f, 1.0f);
-	lightSN3.alphaIndex = 128;
-	lightSN3.distance = 1.0f;
-	lightSN3.type = 0;
-	gLights.push_back(lightSN3);
-
 	//lightEXC1
-	lightEXC1.Position = glm::vec3(-26.3512f, 11.98f, -9.3925f);
+	lightEXC1.Position = glm::vec3(-37.5236f, 12.0f, -24.1394f);
 	lightEXC1.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	lightEXC1.Power = glm::vec4(50.0f, 50.0f, 50.0f, 1.0f);
-	lightEXC1.alphaIndex = 128;
-	lightEXC1.distance = 1.0f;
-	lightEXC1.type = 0;
+	lightEXC1.Power = glm::vec4(10.0f, 10.0f, 10.0f, 1.0f);
+	lightEXC1.Direction = glm::vec3(0.0f, -1.0f, 0.0f);
+	lightEXC1.cutOff = glm::cos(glm::radians(5.0f));
+	lightEXC1.outerCutOff = glm::cos(glm::radians(30.0f));
+	lightEXC1.alphaIndex = 254;
+	lightEXC1.distance = 100.0f;
+	lightEXC1.type = 1;
 	gLights.push_back(lightEXC1);
+	excaLightIndex = gLights.size() - 1;
+
 
 	//lightCUL
-	lightCUL.Position = glm::vec3(18.0336f, 5.0f, 7.49889f);
+	lightCUL.Position = glm::vec3(28.2111f, 10.328f, 5.23175f);
 	lightCUL.Color = glm::vec4(1.0f, 0.698f, 0.0f, 1.0f);
-	lightCUL.Power = glm::vec4(200.0f, 200.0f, 200.0f, 1.0f);
-	lightCUL.alphaIndex = 128;
-	lightCUL.distance = 1.0f;
+	lightCUL.Power = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
+	lightCUL.alphaIndex = 64;
+	lightCUL.distance = 100.0f;
+	lightCUL.Direction = glm::vec3(0.0f, -1.0f, 0.0f);\
+		lightCUL.cutOff = glm::cos(glm::radians(10.0f));
+	lightCUL.outerCutOff = glm::cos(glm::radians(80.0f));
 	lightCUL.type = 1;
 	gLights.push_back(lightCUL);
 
-	// LightTorre1
-	Light lightT1;
-	lightT1.Position = glm::vec3(-44.674f, 8.785f, 0.17336f);
-	lightT1.Color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f); // cyan neón
-	lightT1.Power = glm::vec4(80.0f, 80.0f, 80.0f, 1.0f);
-	lightT1.alphaIndex = 128;
-	lightT1.distance = 2.0f;
-	lightT1.type = 0;
-	gLights.push_back(lightT1);
 
-	// LightTorre2
+	/*	// LightTorre1
+		Light lightT1;
+		lightT1.Position = glm::vec3(-54.5176f, 33.2346f, 11.4002f);
+		lightT1.Color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f); // cyan neón
+		lightT1.Power = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
+		lightT1.alphaIndex = 128;
+		lightT1.type = 0;
+		gLights.push_back(lightT1);*/
+
+
+		// LightTorre2
 	Light lightT2;
-	lightT2.Position = glm::vec3(-39.608f, 10.767f, 4.6277f);
+	lightT2.Position = glm::vec3(-39.1666f, 26.299f, -2.74778f);
 	lightT2.Color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
-	lightT2.Power = glm::vec4(80.0f, 80.0f, 80.0f, 1.0f);
+	lightT2.Power = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
 	lightT2.alphaIndex = 128;
-	lightT2.distance = 2.0f;
 	lightT2.type = 0;
 	gLights.push_back(lightT2);
 
-	// LightTorre3
-	Light lightT3;
-	lightT3.Position = glm::vec3(-45.358f, 14.004f, 9.6701f);
-	lightT3.Color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
-	lightT3.Power = glm::vec4(80.0f, 80.0f, 80.0f, 1.0f);
-	lightT3.alphaIndex = 128;
-	lightT3.distance = 2.0f;
-	lightT3.type = 0;
-	gLights.push_back(lightT3);
+	/*	// LightTorre3
+		Light lightT3;
+		lightT3.Position = glm::vec3(-52.5668f, 20.9316f, 14.7201f);
+		lightT3.Color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
+		lightT3.Power = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
+		lightT3.alphaIndex = 128;
+		lightT3.distance = 2.0f;
+		lightT3.type = 0;
+		gLights.push_back(lightT3);*/
 
-	// Luces plataforma
+		// Luces plataforma
 	Light lightP1;
-	lightP1.Position = glm::vec3(20.172f, 1.1019f, -31.257f);
-	lightP1.Direction = glm::normalize(glm::vec3(23.7f - 20.172f, 3.0f, -31.0f - (-31.257f)));
+	lightP1.Position = glm::vec3(-14.8948f, 20.0f, -70.0441f);
+	lightP1.Direction = glm::vec3(0.0f, -1.0f, 0.0f);
+	//lightP1.Direction = glm::normalize(glm::vec3(23.7f - 20.172f, 3.0f, -31.0f - (-31.257f)));
 	lightP1.Color = glm::vec4(1.0f, 1.0f, 0.8f, 1.0f);
 	lightP1.Power = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
-	lightP1.alphaIndex = 128;
-	lightP1.distance = 5.0f;
+	lightP1.alphaIndex = 32;
 	lightP1.cutOff = glm::cos(glm::radians(15.0f));
 	lightP1.outerCutOff = glm::cos(glm::radians(20.0f));
 	lightP1.type = 1;
 	gLights.push_back(lightP1);
 
+	/*
 	Light lightP2;
 	lightP2.Position = glm::vec3(25.631f, 1.1019f, -34.489f);
 	lightP2.Direction = glm::normalize(glm::vec3(23.7f - 25.631f, 3.0f, -31.0f - (-34.489f)));
@@ -440,38 +439,33 @@ bool Start() {
 	lightP3.outerCutOff = glm::cos(glm::radians(20.0f));
 	lightP3.type = 1;
 	gLights.push_back(lightP3);
+	*/
 
 	// Luces escudos
 	Light lightE1;
-	lightE1.Position = glm::vec3(-28.578f, 5.7313f, 41.991f);
-	lightE1.Color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	lightE1.Position = glm::vec3(-25.7996f, 40.0f, 51.9074f);
+	lightE1.Color = glm::vec4(0.0f, 0.9333f, 1.0f, 1.0f);
 	lightE1.Power = glm::vec4(30.0f, 30.0f, 30.0f, 1.0f);
 	lightE1.alphaIndex = 128;
-	lightE1.distance = 5.0f;
-	lightE1.type = 0;
+	lightE1.Direction = glm::vec3(0.0f, -1.0f, 0.0f);
+	lightP1.cutOff = glm::cos(glm::radians(70.0f));
+	lightP1.outerCutOff = glm::cos(glm::radians(75.0f));
+	lightE1.type = 1;
 	gLights.push_back(lightE1);
 
 	Light lightE2;
-	lightE2.Position = glm::vec3(-33.252f, 3.9654f, 33.067f);
-	lightE2.Color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	lightE2.Position = glm::vec3(-37.8624f, 25.9316f, 44.7794f);
+	lightE2.Color = glm::vec4(0.7098f, 0.0f, 0.7098f, 1.0f);
 	lightE2.Power = glm::vec4(30.0f, 30.0f, 30.0f, 1.0f);
+	lightE2.Direction = glm::vec3(0.0f, -1.0f, 0.0f);
+	lightP1.cutOff = glm::cos(glm::radians(15.0f));
+	lightP1.outerCutOff = glm::cos(glm::radians(20.0f));
 	lightE2.alphaIndex = 128;
 	lightE2.distance = 5.0f;
-	lightE2.type = 0;
+	lightE2.type = 1;
 	gLights.push_back(lightE2);
-	Light farolIzq;
-	farolIzq.type = 1; 
-	farolIzq.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f); 
-	farolIzq.Power = glm::vec4(20.0f, 16.0f, 16.0f, 16.0f); 
-	farolIzq.cutOff = glm::cos(glm::radians(15.0f)); 
-	farolIzq.outerCutOff = glm::cos(glm::radians(24.5f)); 
-	gLights.push_back(farolIzq);
-	farolIzqIndex = gLights.size() - 1;
 
-	Light farolDer = farolIzq;
-	gLights.push_back(farolDer);
-	farolDerIndex = gLights.size() - 1;
-
+	SoundEngine->play2D("sound/musicaPF.mp3", true);
 	return true;
 }
 
@@ -537,14 +531,14 @@ bool Update() {
 	{
 		mainCubeMap->drawCubeMap(*cubemapShader, projection, view);
 	}
-	
-	 {
+
+	{
 		mLightsShader->use();
 
 		// Activamos para objetos transparentes
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
+
 		mLightsShader->setMat4("projection", projection);
 		mLightsShader->setMat4("view", view);
 
@@ -568,7 +562,7 @@ bool Update() {
 			SetLightUniformFloat(mLightsShader, "cutOff", i, gLights[i].cutOff);
 			SetLightUniformFloat(mLightsShader, "outerCutOff", i, gLights[i].outerCutOff);
 		}
-		
+
 		mLightsShader->setVec3("eye", camera.Position);
 
 		material.ambient = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
@@ -586,7 +580,7 @@ bool Update() {
 
 		//Meteorito
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-21.6288f + meteor_offset, 23.8857f - meteor_offset, 36.3215f )); // translate it down so it's at the center of the scene
+		model = glm::translate(model, glm::vec3(-88.7501f + meteor_offset, 68.6332f - meteor_offset, 36.3215f)); // translate it down so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.2f + meteor_size, 0.1f + meteor_size, 0.1f + meteor_size));
@@ -595,16 +589,16 @@ bool Update() {
 
 		// Excavadora
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-29.4625f, 13.2426f, -12.8524f)); // translate it down so it's at the center of the scene
+		model = glm::translate(model, glm::vec3(-37.5564f, 14.4908f, -35.5709f)); // translate it down so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
 		model = glm::rotate(model, glm::radians(excavadora_rotation), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		mLightsShader->setMat4("model", model);
-		excavadora ->Draw(*mLightsShader);
+		excavadora->Draw(*mLightsShader);
 
 		// Supernova
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-113.741f, 49.8045f, 31.1289f)); // translate it down so it's at the center of the scene
+		model = glm::translate(model, glm::vec3(-279.089f, 50.6231f, 31.1289f)); // translate it down so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
 		model = glm::rotate(model, glm::radians(supernova_rotation), glm::vec3(-0.407f, -0.816f, 0.411f));
 		model = glm::rotate(model, glm::radians(29.1885f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -633,8 +627,9 @@ bool Update() {
 			if (capsule_offset <= 0.0f) going_up = true;
 		}
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(9.252f, capsule_offset + 0.0f, -28.0f));
+		model = glm::translate(model, glm::vec3(9.58151f, capsule_offset + 4.76404f, -58.8634f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		mLightsShader->setMat4("model", model);
 		capsula->Draw(*mLightsShader);
 
@@ -649,7 +644,7 @@ bool Update() {
 			float velX = (0.7f * cos(tiempo * 0.7f) * 3.0f) - (1.3f * sin(tiempo * 1.3f) * 2.0f);
 			float velZ = -(0.5f * sin(tiempo * 0.5f) * 3.0f) + (1.1f * cos(tiempo * 1.1f) * 2.0f);
 			float angulo_orientacion = atan2(velX, velZ);
-			model = glm::translate(model, glm::vec3(10.0f + offsetX, 0.0f + offsetY, -25.0f + offsetZ));
+			model = glm::translate(model, glm::vec3(9.58151f + offsetX, 4.76404f + offsetY, -58.8634f + offsetZ));
 			model = glm::rotate(model, angulo_orientacion, glm::vec3(0.0f, 1.0f, 0.0f));
 			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 			model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
@@ -679,7 +674,7 @@ bool Update() {
 		}
 
 	}
-		
+
 
 	glUseProgram(0);
 
@@ -699,17 +694,17 @@ bool Update() {
 
 		// Aplicamos transformaciones del modelo
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(17.7995f, 0.770269f, 7.29547f));
+		model = glm::translate(model, glm::vec3(28.3071f, 1.61172f, 4.82495f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		proceduralShader->setMat4("model", model);
 
 		proceduralShader->setFloat("time", proceduralTime);
-		proceduralShader->setFloat("radius", 14.0f);
+		proceduralShader->setFloat("radius", 17.82f);
 		proceduralShader->setFloat("height", 0.0f);
 
 		camion->Draw(*proceduralShader);
-		proceduralTime += 0.01;
+		proceduralTime += 0.001;
 
 	}
 
@@ -730,54 +725,55 @@ bool Update() {
 
 		// Aplicamos transformaciones del modelo
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(20.0f, 0.0f, 20.0f));
+		model = glm::translate(model, glm::vec3(-4.96295f, 42.1318f, -89.7294f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		proceduralShader->setMat4("model", model);
 
 		proceduralShader->setFloat("time", proceduralTime);
-		proceduralShader->setFloat("radius", 20.0f);
-		proceduralShader->setFloat("height", 10.0f);
+		proceduralShader->setFloat("radius", 89.729f);
+		proceduralShader->setFloat("height", 42.1318f);
 
 		nave->Draw(*proceduralShader);
-		proceduralTime += 0.01;
+		proceduralTime += 0.001;
 
 	}
 
 	glUseProgram(0);
 
-	// PLANETA
-	{
-		// Activamos el shader 
-		proceduralPlaneta->use();
+	/*	// PLANETA
+		{
+			// Activamos el shader
+			proceduralPlaneta->use();
 
-		// Activamos para objetos transparentes
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			// Activamos para objetos transparentes
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		// Aplicamos transformaciones de proyección y cámara (si las hubiera)
-		proceduralPlaneta->setMat4("projection", projection);
-		proceduralPlaneta->setMat4("view", view);
+			// Aplicamos transformaciones de proyección y cámara (si las hubiera)
+			proceduralPlaneta->setMat4("projection", projection);
+			proceduralPlaneta->setMat4("view", view);
 
-		// Aplicamos transformaciones del modelo
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		proceduralPlaneta->setMat4("model", model);
+			// Aplicamos transformaciones del modelo
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+			proceduralPlaneta->setMat4("model", model);
 
-		proceduralPlaneta->setFloat("time", proceduralTime);
-		proceduralPlaneta->setFloat("a", 15.0f);
-		proceduralPlaneta->setFloat("m", 1.0f);
+			proceduralPlaneta->setFloat("time", proceduralTime);
+			proceduralPlaneta->setFloat("a", 15.0f);
+			proceduralPlaneta->setFloat("m", 1.0f);
 
-		planeta0->Draw(*proceduralPlaneta);
-		proceduralTime += 0.00001;
+			planeta0->Draw(*proceduralPlaneta);
+			proceduralTime += 0.00001;
 
-	}
+		}
 
-	glUseProgram(0);
+		glUseProgram(0);*/
 
-	// PLANETA 1
+		// PLANETA 1
 	{
 		// Activamos el shader 
 		proceduralPlaneta->use();
@@ -794,11 +790,11 @@ bool Update() {
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.5f, 0.0f));
-		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		proceduralPlaneta->setMat4("model", model);
 
 		proceduralPlaneta->setFloat("time", proceduralTime);
-		proceduralPlaneta->setFloat("a", 15.0f);
+		proceduralPlaneta->setFloat("a", 415.0f);
 		proceduralPlaneta->setFloat("m", 1.0f);
 
 		planeta1->Draw(*proceduralPlaneta);
@@ -809,8 +805,8 @@ bool Update() {
 	glUseProgram(0);
 
 	// PLANETA 2
-	{
-		// Activamos el shader 
+/*	{
+		// Activamos el shader
 		proceduralPlaneta->use();
 
 		// Activamos para objetos transparentes
@@ -835,7 +831,7 @@ bool Update() {
 		planeta2->Draw(*proceduralPlaneta);
 		proceduralTime += 0.00001;
 
-	}
+	}*/
 
 	glUseProgram(0);
 
@@ -856,11 +852,11 @@ bool Update() {
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.25f, 0.75f));
-		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		proceduralPlaneta->setMat4("model", model);
 
 		proceduralPlaneta->setFloat("time", proceduralTime);
-		proceduralPlaneta->setFloat("a", 15.0f);
+		proceduralPlaneta->setFloat("a", 280.687f);
 		proceduralPlaneta->setFloat("m", 1.0f);
 
 		planeta3->Draw(*proceduralPlaneta);
@@ -892,11 +888,19 @@ bool Update() {
 
 		proceduralSatelite->setFloat("time", proceduralTime);
 		proceduralSatelite->setFloat("horizontalSpeed", 0.5f);
-		proceduralSatelite->setFloat("radiusY", 60.0f);
-		proceduralSatelite->setFloat("radiusZ", 50.0f);
-		proceduralSatelite->setFloat("startX", -50.0f);
+		proceduralSatelite->setFloat("radiusY", 200.0f);
+		proceduralSatelite->setFloat("radiusZ", 150.0f);
+		proceduralSatelite->setFloat("startX", 15.8576f);
 
 		satelite0->Draw(*proceduralSatelite);
+
+		proceduralSatelite->setFloat("startX", -4.81452f);
+		satelite1->Draw(*proceduralSatelite);
+
+		proceduralSatelite->setFloat("startX", -23.8376f);
+		satelite2->Draw(*proceduralSatelite);
+
+
 		proceduralTime += 0.00001;
 
 	}
@@ -905,7 +909,7 @@ bool Update() {
 	/*
 	// SATELITE 1
 	{
-		// Activamos el shader 
+		// Activamos el shader
 		proceduralSatelite->use();
 
 		// Activamos para objetos transparentes
@@ -938,7 +942,7 @@ bool Update() {
 
 	// SATELITE 2
 	{
-		// Activamos el shader 
+		// Activamos el shader
 		proceduralSatelite->use();
 
 		// Activamos para objetos transparentes
@@ -981,19 +985,19 @@ bool Update() {
 		wavesShader->setMat4("view", view);
 		// Aplicamos transformaciones del modelo
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(3.0935f, 7.5397f, -45.266f));
+		model = glm::translate(model, glm::vec3(-12.5151f, 4.01237f, 15.2939f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		wavesShader->setMat4("model", model);
 		wavesShader->setFloat("time", wavesTime);
 		wavesShader->setFloat("radius", 5.0f);
 		wavesShader->setFloat("height", 5.0f);
 		bandera->Draw(*wavesShader);
-		wavesTime += 0.01;
+		wavesTime += 0.001;
 	}
 
 	glUseProgram(0);
-	
+
 	// Astronauta
 	{
 		character01->UpdateAnimation(deltaTime);
@@ -1019,7 +1023,7 @@ bool Update() {
 		character01->Draw(*dynamicShader);
 	}
 
-	glUseProgram(0); 
+	glUseProgram(0);
 
 	// glfw: swap buffers 
 	glfwSwapBuffers(window);
@@ -1055,10 +1059,29 @@ void processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 
-	if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS) {
+		glm::vec3 lightPos = glm::vec3(gLights[excaLightIndex].Position);
+		anguloexcavadora = glm::radians(1.0f);
+		glm::mat4 transformation = glm::mat4(1.0f);
+		transformation = glm::translate(transformation, pivoteEXC1);
+		transformation = glm::rotate(transformation, anguloexcavadora, glm::vec3(0.0f, 1.0f, 0.0f));
+		transformation = glm::translate(transformation, -pivoteEXC1);
+		lightPos = glm::vec3(transformation * glm::vec4(lightPos, 1.0f));
+		gLights[excaLightIndex].Position = lightPos;
 		excavadora_rotation += 1.f;
-	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {
+		glm::vec3 lightPos = glm::vec3(gLights[excaLightIndex].Position);
+		anguloexcavadora = glm::radians(-1.0f);
+		glm::mat4 transformation = glm::mat4(1.0f);
+		transformation = glm::translate(transformation, pivoteEXC1);
+		transformation = glm::rotate(transformation, anguloexcavadora, glm::vec3(0.0f, 1.0f, 0.0f));
+		transformation = glm::translate(transformation, -pivoteEXC1);
+		lightPos = glm::vec3(transformation * glm::vec4(lightPos, 1.0f));
+		gLights[excaLightIndex].Position = lightPos;
 		excavadora_rotation -= 1.f;
+	}
 	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
 		supernova_rotation += 1.f;
 	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
@@ -1195,7 +1218,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	}
 
 	float xoffset = (float)xpos - lastX;
-	float yoffset = lastY - (float)ypos; 
+	float yoffset = lastY - (float)ypos;
 
 	lastX = (float)xpos;
 	lastY = (float)ypos;
