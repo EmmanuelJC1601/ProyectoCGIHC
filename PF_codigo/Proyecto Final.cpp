@@ -63,7 +63,7 @@ float lastFrame = 0.0f;
 float elapsedTime = 0.0f;
 
 // Declaración global ajustada para la posición inicial del astronauta
-glm::vec3 position(-1.1156f, 0.0f, -13.627f);
+glm::vec3 position(-1.1156f, 0.5f, -13.627f);
 glm::vec3 forwardView(0.0f, 0.0f, 1.0f);
 float     trdpersonOffset = 1.5f;
 float     scaleV = 0.025f;
@@ -158,7 +158,7 @@ Light lightSN1;
 Light lightSN2;
 Light lightSN3;
 Light lightEXC1;
-glm::vec3 pivoteEXC1 = glm::vec3(-37.5564f, 14.4908f, -35.5709f);
+glm::vec3 pivoteEXC1 = glm::vec3(-37.5089f, 3.24571f, -35.2198f);
 Light lightCUL;
 
 int meteorLightIndex;
@@ -387,54 +387,48 @@ bool Start() {
 	gLights.push_back(lightCUL);
 
 
-	/*	// LightTorre1
-		Light lightT1;
-		lightT1.Position = glm::vec3(-54.5176f, 33.2346f, 11.4002f);
-		lightT1.Color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f); // cyan neón
-		lightT1.Power = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
-		lightT1.alphaIndex = 128;
-		lightT1.type = 0;
-		gLights.push_back(lightT1);*/
-
-
-		// LightTorre2
+	// LightTorre1
+	Light lightT1;
+	lightT1.Position = glm::vec3(-38.787f, 25.325f, -2.8524f);
+	lightT1.Color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
+	lightT1.Power = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
+	lightT1.alphaIndex = 128;
+	lightT1.type = 0;
+	gLights.push_back(lightT1);
+	/*
+	// LightTorre2
 	Light lightT2;
-	lightT2.Position = glm::vec3(-39.1666f, 26.299f, -2.74778f);
+	lightT2.Position = glm::vec3(-52.799f, 21.013f, -15.166f);
 	lightT2.Color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
-	lightT2.Power = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
-	lightT2.alphaIndex = 128;
+	lightT2.Power = glm::vec4(8.0f, 8.0f, 8.0f, 1.0f);
+	lightT2.alphaIndex = 500;
 	lightT2.type = 0;
 	gLights.push_back(lightT2);
 
-	/*	// LightTorre3
-		Light lightT3;
-		lightT3.Position = glm::vec3(-52.5668f, 20.9316f, 14.7201f);
-		lightT3.Color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
-		lightT3.Power = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
-		lightT3.alphaIndex = 128;
-		lightT3.distance = 2.0f;
-		lightT3.type = 0;
-		gLights.push_back(lightT3);*/
+	// LightTorre3
+	Light lightT3;
+	lightT3.Position = glm::vec3(-54.001f, 32.973f, 11.304f);
+	lightT3.Color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
+	lightT3.Power = glm::vec4(8.0f, 8.0f, 8.0f, 1.0f);
+	lightT3.alphaIndex = 500;
+	lightT3.type = 0;
+	gLights.push_back(lightT3);*/
 
-		// Luces plataforma
+	// Plataforma
 	Light lightP1;
-	lightP1.Position = glm::vec3(-14.8948f, 20.0f, -70.0441f);
-	lightP1.Direction = glm::vec3(0.0f, -1.0f, 0.0f);
-	//lightP1.Direction = glm::normalize(glm::vec3(23.7f - 20.172f, 3.0f, -31.0f - (-31.257f)));
+	lightP1.Position = glm::vec3(-14.954f, 0.7f, -69.898f);
 	lightP1.Color = glm::vec4(1.0f, 1.0f, 0.8f, 1.0f);
 	lightP1.Power = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
-	lightP1.alphaIndex = 32;
-	lightP1.cutOff = glm::cos(glm::radians(15.0f));
-	lightP1.outerCutOff = glm::cos(glm::radians(20.0f));
-	lightP1.type = 1;
+	lightP1.alphaIndex = 512;
+	lightP1.distance = 10.0f;
+	lightP1.type = 0;
 	gLights.push_back(lightP1);
-
 	/*
 	Light lightP2;
-	lightP2.Position = glm::vec3(25.631f, 1.1019f, -34.489f);
-	lightP2.Direction = glm::normalize(glm::vec3(23.7f - 25.631f, 3.0f, -31.0f - (-34.489f)));
+	lightP2.Position = glm::vec3(-19.059f, 0.9f, -69.796f);
+	lightP2.Direction = glm::normalize(glm::vec3(-14.954f - (-19.059f), 3.0f, -69.898f - (-69.796f)));
 	lightP2.Color = glm::vec4(1.0f, 1.0f, 0.8f, 1.0f);
-	lightP2.Power = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
+	lightP2.Power = glm::vec4(40.0f, 40.0f, 40.0f, 1.0f);
 	lightP2.alphaIndex = 128;
 	lightP2.distance = 5.0f;
 	lightP2.cutOff = glm::cos(glm::radians(15.0f));
@@ -443,17 +437,16 @@ bool Start() {
 	gLights.push_back(lightP2);
 
 	Light lightP3;
-	lightP3.Position = glm::vec3(25.563f, 1.1019f, -27.408f);
-	lightP3.Direction = glm::normalize(glm::vec3(23.7f - 25.563f, 3.0f, -31.0f - (-27.408f)));
+	lightP3.Position = glm::vec3(-14.204f, 0.9f, -73.826f);
+	lightP3.Direction = glm::normalize(glm::vec3(-14.954f - (-14.204f), 3.0f, -69.898f - (-73.826f)));
 	lightP3.Color = glm::vec4(1.0f, 1.0f, 0.8f, 1.0f);
-	lightP3.Power = glm::vec4(20.0f, 20.0f, 20.0f, 1.0f);
+	lightP3.Power = glm::vec4(40.0f, 40.0f, 40.0f, 1.0f);
 	lightP3.alphaIndex = 128;
 	lightP3.distance = 5.0f;
 	lightP3.cutOff = glm::cos(glm::radians(15.0f));
 	lightP3.outerCutOff = glm::cos(glm::radians(20.0f));
 	lightP3.type = 1;
-	gLights.push_back(lightP3);
-	*/
+	gLights.push_back(lightP3); */
 
 	// Luces escudos
 	Light lightE1;
@@ -462,8 +455,8 @@ bool Start() {
 	lightE1.Power = glm::vec4(30.0f, 30.0f, 30.0f, 1.0f);
 	lightE1.alphaIndex = 128;
 	lightE1.Direction = glm::vec3(0.0f, -1.0f, 0.0f);
-	lightP1.cutOff = glm::cos(glm::radians(70.0f));
-	lightP1.outerCutOff = glm::cos(glm::radians(75.0f));
+	lightE1.cutOff = glm::cos(glm::radians(70.0f));
+	lightE1.outerCutOff = glm::cos(glm::radians(75.0f));
 	lightE1.type = 1;
 	gLights.push_back(lightE1);
 
@@ -472,14 +465,14 @@ bool Start() {
 	lightE2.Color = glm::vec4(0.7098f, 0.0f, 0.7098f, 1.0f);
 	lightE2.Power = glm::vec4(30.0f, 30.0f, 30.0f, 1.0f);
 	lightE2.Direction = glm::vec3(0.0f, -1.0f, 0.0f);
-	lightP1.cutOff = glm::cos(glm::radians(15.0f));
-	lightP1.outerCutOff = glm::cos(glm::radians(20.0f));
+	lightE2.cutOff = glm::cos(glm::radians(15.0f));
+	lightE2.outerCutOff = glm::cos(glm::radians(20.0f));
 	lightE2.alphaIndex = 128;
 	lightE2.distance = 5.0f;
 	lightE2.type = 1;
 	gLights.push_back(lightE2);
 
-	SoundEngine->play2D("sound/musicaPF.mp3", true);
+	SoundEngine->play2D("sound/musicaPF.wav", true);
 	return true;
 }
 
@@ -594,7 +587,7 @@ bool Update() {
 
 		//Meteorito
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-88.7501f + meteor_offset, 68.6332f - meteor_offset, 36.3215f)); // translate it down so it's at the center of the scene
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.2f + meteor_size, 0.1f + meteor_size, 0.1f + meteor_size));
@@ -603,7 +596,7 @@ bool Update() {
 
 		// Excavadora
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-37.5564f, 14.4908f, -35.5709f)); // translate it down so it's at the center of the scene
+		model = glm::translate(model, glm::vec3(-37.5089f, 3.24571f, -35.2198f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
 		model = glm::rotate(model, glm::radians(excavadora_rotation), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -612,7 +605,7 @@ bool Update() {
 
 		// Supernova
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-279.089f, 50.6231f, 31.1289f)); // translate it down so it's at the center of the scene
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
 		model = glm::rotate(model, glm::radians(supernova_rotation), glm::vec3(-0.407f, -0.816f, 0.411f));
 		model = glm::rotate(model, glm::radians(29.1885f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -649,7 +642,7 @@ bool Update() {
 			if (capsule_offset <= 0.0f) going_up = true;
 		}
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(9.58151f, capsule_offset + 4.76404f, -58.8634f));
+		model = glm::translate(model, glm::vec3(0.0f, capsule_offset, 0.0f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		mLightsShader->setMat4("model", model);
@@ -697,7 +690,7 @@ bool Update() {
 
 	}
 	glUseProgram(0);
-
+	
 	{
 		fresnelMetalShader->use();
 		glEnable(GL_BLEND);
@@ -738,7 +731,7 @@ bool Update() {
 		PF_CRISTAL->Draw(*fresnelVidrioShader);
 	}
 	glUseProgram(0);
-
+	
 
 	// CAMION
 	{
@@ -802,38 +795,38 @@ bool Update() {
 
 	glUseProgram(0);
 
-		// PLANETA
-		{
-			// Activamos el shader
-			proceduralPlaneta->use();
+	// PLANETA
+	{
+		// Activamos el shader
+		proceduralPlaneta->use();
 
-			// Activamos para objetos transparentes
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		// Activamos para objetos transparentes
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-			// Aplicamos transformaciones de proyección y cámara (si las hubiera)
-			proceduralPlaneta->setMat4("projection", projection);
-			proceduralPlaneta->setMat4("view", view);
+		// Aplicamos transformaciones de proyección y cámara (si las hubiera)
+		proceduralPlaneta->setMat4("projection", projection);
+		proceduralPlaneta->setMat4("view", view);
 
-			// Aplicamos transformaciones del modelo
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-			model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-			proceduralPlaneta->setMat4("model", model);
+		// Aplicamos transformaciones del modelo
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		proceduralPlaneta->setMat4("model", model);
 
-			proceduralPlaneta->setFloat("time", proceduralTime);
-			proceduralPlaneta->setFloat("a", 30.0f);
-			proceduralPlaneta->setFloat("m", 1.0f);
+		proceduralPlaneta->setFloat("time", proceduralTime);
+		proceduralPlaneta->setFloat("a", 30.0f);
+		proceduralPlaneta->setFloat("m", 1.0f);
 
-			planeta0->Draw(*proceduralPlaneta);
-			proceduralTime += 0.00001;
+		planeta0->Draw(*proceduralPlaneta);
+		proceduralTime += 0.00001;
 
-		}
+	}
 
-		glUseProgram(0);
+	glUseProgram(0);
 
-		// PLANETA 1
+	// PLANETA 1
 	{
 		// Activamos el shader 
 		proceduralPlaneta->use();
@@ -1053,7 +1046,7 @@ bool Update() {
 		wavesShader->setMat4("view", view);
 		// Aplicamos transformaciones del modelo
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-12.5151f, 4.01237f, 15.2939f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		wavesShader->setMat4("model", model);
