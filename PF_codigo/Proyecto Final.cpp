@@ -587,8 +587,8 @@ bool Update() {
 
 		//Meteorito
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+		model = glm::translate(model, glm::vec3(-88.7501f + meteor_offset, 68.6332f - meteor_offset, 36.3215f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.2f + meteor_size, 0.1f + meteor_size, 0.1f + meteor_size));
 		mLightsShader->setMat4("model", model);
@@ -605,8 +605,8 @@ bool Update() {
 
 		// Supernova
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+		model = glm::translate(model, glm::vec3(-279.089f, 50.6231f, 31.1289f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		model = glm::rotate(model, glm::radians(supernova_rotation), glm::vec3(-0.407f, -0.816f, 0.411f));
 		model = glm::rotate(model, glm::radians(29.1885f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(-26.0396f), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -653,13 +653,13 @@ bool Update() {
 			model = glm::mat4(1.0f);
 
 			float tiempo = currentFrame;
-			float offsetX = (sin(tiempo * 0.06f) * 0.10f) + (cos(tiempo * 0.107f) * 0.0f);
-			float offsetZ = (cos(tiempo * 0.03f) * 0.20f) + (sin(tiempo * 0.101f) * 0.10f);
-			float offsetY = abs(sin(tiempo * 0.40f)) * 0.02f + sin(tiempo * 0.105f) * 0.1f;
-			float velX = (0.07f * cos(tiempo * 0.07f) * 0.30f) + (0.103f * sin(tiempo * 0.103f) * 0.20f);
-			float velZ = -(0.05f * sin(tiempo * 0.05f) * 0.30f) - (0.101f * cos(tiempo * 0.101f) * 0.20f);
+			float offsetX = (sin(tiempo * 0.6f) * 1.0f) + (cos(tiempo * 1.7f) * 0.0f);
+			float offsetZ = (cos(tiempo * 0.3f) * 2.0f) + (sin(tiempo * 1.1f) * 1.0f);
+			float offsetY = abs(sin(tiempo * 4.0f)) * 0.2f + sin(tiempo * 1.5f) * 0.1f;
+			float velX = (0.7f * cos(tiempo * 0.7f) * 3.0f) + (1.3f * sin(tiempo * 1.3f) * 2.0f);
+			float velZ = -(0.5f * sin(tiempo * 0.5f) * 3.0f) - (1.1f * cos(tiempo * 1.1f) * 2.0f);
 			float angulo_orientacion = atan2(velX, velZ);
-			model = glm::translate(model, glm::vec3(5.0f + offsetX, 0.0f + offsetY, 0.0f + offsetZ));
+			model = glm::translate(model, glm::vec3(25.0f + offsetX, 1.5f + offsetY, -25.0f + offsetZ));
 			model = glm::rotate(model, angulo_orientacion, glm::vec3(0.0f, 1.0f, 0.0f));
 			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
@@ -703,10 +703,14 @@ bool Update() {
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		fresnelMetalShader->setMat4("model", model);
 		fresnelMetalShader->setVec3("cameraPosition", camera.Position);
-		fresnelMetalShader->setFloat("mRefractionRatio", 1.0f / 2.5f);
+		fresnelMetalShader->setFloat("mRefractionRatio", 1.0f / 1.0f);
 		fresnelMetalShader->setFloat("_Bias", 0.1f);
 		fresnelMetalShader->setFloat("_Scale", 1.0f);
 		fresnelMetalShader->setFloat("_Power", 3.0f);
+		fresnelMetalShader->setInt("texture_diffuse1", 0);
+		fresnelMetalShader->setInt("cubetex", 1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, mainCubeMap->textureID);
 		PF_METAL->Draw(*fresnelMetalShader);
 	}
 	glUseProgram(0);
@@ -717,21 +721,23 @@ bool Update() {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		fresnelVidrioShader->setMat4("projection", projection);
 		fresnelVidrioShader->setMat4("view", view);
-
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		fresnelVidrioShader->setMat4("model", model);
 		fresnelVidrioShader->setVec3("cameraPosition", camera.Position);
-		fresnelVidrioShader->setFloat("mRefractionRatio", 1.0f / 1.5f); // vidrio
+		fresnelVidrioShader->setFloat("mRefractionRatio", 1.0f / 1.5f);
 		fresnelVidrioShader->setFloat("_Bias", 0.5f);
 		fresnelVidrioShader->setFloat("_Scale", 0.5f);
 		fresnelVidrioShader->setFloat("_Power", 2.0f);
+		fresnelVidrioShader->setInt("texture_diffuse1", 0);
+		fresnelVidrioShader->setInt("cubetex", 1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, mainCubeMap->textureID);
 		PF_CRISTAL->Draw(*fresnelVidrioShader);
 	}
 	glUseProgram(0);
-	
 
 	// CAMION
 	{
